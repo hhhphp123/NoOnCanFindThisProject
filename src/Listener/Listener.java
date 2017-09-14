@@ -1,12 +1,20 @@
 package Listener;
 
 import shape.ImplLine;
+import shape.Circle;
 import shape.Shape;
+import shape.Rectangle;
+import shape.Oval;
+import shape.Freehand;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JFrame;
+
+import client.ClientManager.WhiteBoard;
 
 public class Listener implements ActionListener, MouseListener,MouseMotionListener {
     
@@ -22,7 +30,7 @@ public class Listener implements ActionListener, MouseListener,MouseMotionListen
     private int x1,y1,x2,y2;//(x1,y1),(x2,y2) click and release mouse
     private String shape;
     private Color color = Color.BLACK;
-   
+    private ArrayList<Point> points = new ArrayList<Point>();
     
     public int getX1() {
 		return x1;
@@ -77,9 +85,7 @@ public class Listener implements ActionListener, MouseListener,MouseMotionListen
         this.g = g;
  
     }
-    
-    
-    
+     
     public void setShape(String shape)
     {
     	this.shape = shape;
@@ -90,13 +96,16 @@ public class Listener implements ActionListener, MouseListener,MouseMotionListen
     	return shape;
     }
    
-
-
     @Override
     //drag mouse
     public void mouseDragged(MouseEvent e) {
-        
-       
+    	
+    	if(getShape()=="freehand") {
+    		points.add(e.getPoint());
+    		g.drawLine(x1, y1, e.getX(), e.getY());
+    		x1=e.getX();
+    		y1=e.getY();
+    	}
     }
 
     @Override
@@ -117,6 +126,11 @@ public class Listener implements ActionListener, MouseListener,MouseMotionListen
     	
         x1=e.getX();//get x
         y1=e.getY();//get y
+        
+        if(getShape()=="freehand") {
+        	points.clear();
+        	points.add(e.getPoint());
+        }
 //        System.out.println(getShape());
 //        System.out.println(getColor());
 //        System.out.println(getG());
@@ -130,32 +144,34 @@ public class Listener implements ActionListener, MouseListener,MouseMotionListen
     public void mouseReleased(MouseEvent e) {
         x2 = e.getX();
         y2 = e.getY();
+        Shape shape;
         
         switch(getShape())
         {
         	case "line" :
-        		 //g.drawLine(x1, y1, x2, y2);
-        		Shape shape=new ImplLine(g,x1,y1,x2,y2,color);
-                //CALL DARW
+        		shape=new ImplLine(g,x1,y1,x2,y2,color);
                 shape.draw();
-                //SAVE THE LIST FOR REPAINT
                 shapesArray.add(shape);
-                System.out.println("addok");
         		 break;
         	case "circle" :
-        		g.drawOval(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(x1 - x2));
+        		shape = new Circle(x1, x2, y1, y2, color, g);
+        		shape.draw();
+        		shapesArray.add(shape);
        		 	break;
         	case "rectangle" :
-        		 g.drawRect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2));
+        		shape = new Rectangle(x1, x2, y1, y2, color, g);
+        		shape.draw();
+        		shapesArray.add(shape);		 
        		 	break;
         	case "oval" :
-       		 	g.drawOval(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2));
+        		shape = new Oval(x1, x2, y1, y2, color, g);
+        		shape.draw();
+        		shapesArray.add(shape);	
        		 	break;
         	case "freehand":
-        		g.drawLine(x1, y1, x2, y2);
-        		break;
-        		
-        	
+        		shape = new Freehand(points, color, g);
+        		shapesArray.add(shape);
+        		break;	
         }
         //System.out.println(getG());
         //g.drawLine(x1, y1, x2, y2);
