@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import client.ClientManager.WhiteBoard;
 
@@ -31,6 +32,12 @@ public class Listener implements ActionListener, MouseListener,MouseMotionListen
     private String shape;
     private Color color = Color.BLACK;
     private ArrayList<Point> points = new ArrayList<Point>();
+    private JFrame panel;
+    private Shape dragShape;
+    
+    public void setPanel(JFrame panel) {
+    	this.panel=panel;
+    }
     
     public int getX1() {
 		return x1;
@@ -99,19 +106,38 @@ public class Listener implements ActionListener, MouseListener,MouseMotionListen
     @Override
     //drag mouse
     public void mouseDragged(MouseEvent e) {
-    	
+    	if(shapesArray.contains(dragShape)) {
+			shapesArray.remove(dragShape);
+			System.out.println("removing old shape");
+		}
     	if(getShape()=="freehand") {
     		points.add(e.getPoint());
     		g.drawLine(x1, y1, e.getX(), e.getY());
     		x1=e.getX();
     		y1=e.getY();
-    	}
+    	} else if(getShape()=="line") {
+    		dragShape = new ImplLine(g, x1,y1,e.getX(), e.getY(), color);
+    		shapesArray.add(dragShape);
+    		panel.repaint();
+    	} else if(getShape()=="circle") {
+    		dragShape = new Circle(x1,e.getX(),y1, e.getY(), color,g);
+    		shapesArray.add(dragShape);
+    		panel.repaint();
+    	} else if(getShape()=="rectangle") {
+    		dragShape = new Rectangle(x1,e.getX(),y1, e.getY(), color,g);
+    		shapesArray.add(dragShape);
+    		panel.repaint();
+    	} else if(getShape()=="oval") {
+    		dragShape = new Oval(x1,e.getX(), y1,e.getY(), color,g);
+    		shapesArray.add(dragShape);
+    		panel.repaint();
+    	} 
     }
 
     @Override
   
     public void mouseMoved(MouseEvent e) {
-
+ 
     }
 
     @Override

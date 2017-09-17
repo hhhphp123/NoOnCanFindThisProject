@@ -33,7 +33,7 @@ import java.awt.event.ActionEvent;
 public class ClientManager {
 	private static List<Shape> shapesArray = new ArrayList<Shape>();
 	private static Graphics g;
-	private JFrame frmWhiteboard;
+	private static JFrame frmWhiteboard;
 	private JTextField textField;
 	private static JPanel panel = new JPanel();
 	static Listener listener = new Listener();
@@ -49,6 +49,7 @@ public class ClientManager {
 						ClientManager window = new ClientManager();
 						window.frmWhiteboard.setVisible(true);
 						listener.setG(panel.getGraphics());
+						listener.setPanel(frmWhiteboard);
 						shapesArray = listener.getShapesArray();
 						System.out.println(shapesArray.size());
 						
