@@ -8,10 +8,6 @@ import java.io.File;
 
 @SuppressWarnings("serial")
 public class FileChooser extends JFrame{
-    JButton open=null;
-    public static void main(String[] args) {
-        new FileChooser();
-    }
     public FileChooser(){
         JFileChooser jfc=new JFileChooser();
         jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );

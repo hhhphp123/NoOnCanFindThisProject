@@ -1,7 +1,8 @@
 package client;
 
-import Listener.Listener;
 import Listener.FileChooser;
+import Listener.FileSave;
+import Listener.Listener;
 import shape.Shape;
 
 import javax.swing.*;
@@ -9,6 +10,7 @@ import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,6 +133,17 @@ public class ClientManager {
 		mnNewMenu.add(mntmNewMenuItem);
 		
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("save");
+		mntmNewMenuItem_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new FileSave();
+				try {
+					BufferedImage image = new Robot().createScreenCapture(
+                            new Rectangle( panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight() ) );
+				} catch (AWTException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		mnNewMenu.add(mntmNewMenuItem_1);
 		
 		JMenuItem mntmNewMenuItem_3 = new JMenuItem("saveAs ");
