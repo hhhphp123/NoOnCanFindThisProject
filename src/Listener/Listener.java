@@ -1,21 +1,14 @@
 package Listener;
 
-import shape.ImplLine;
-import shape.Circle;
-import shape.Shape;
+import shape.*;
 import shape.Rectangle;
-import shape.Oval;
-import shape.Freehand;
+import shape.Shape;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import client.ClientManager.WhiteBoard;
 
 public class Listener implements ActionListener, MouseListener,MouseMotionListener {
     
@@ -32,14 +25,22 @@ public class Listener implements ActionListener, MouseListener,MouseMotionListen
     private String shape;
     private Color color = Color.BLACK;
     private ArrayList<Point> points = new ArrayList<Point>();
-    private JFrame panel;
-    private Shape dragShape;
-    
-    public void setPanel(JFrame panel) {
-    	this.panel=panel;
-    }
-    
-    public int getX1() {
+	private ArrayList<ArrayList<Point>> actulpoints = new ArrayList<ArrayList<Point>>();
+    private String text = "Text";
+	private JFrame panel;
+	private Shape dragShape;
+ 	public void setPanel(JFrame panel) {
+		   	this.panel=panel;
+		  }
+	public void setActulpoints(ArrayList<ArrayList<Point>> actulpoints) {
+		this.actulpoints = actulpoints;
+	}
+
+	public ArrayList<ArrayList<Point>> getActulpoints() {
+		return actulpoints;
+	}
+
+	public int getX1() {
 		return x1;
 	}
 
@@ -106,38 +107,40 @@ public class Listener implements ActionListener, MouseListener,MouseMotionListen
     @Override
     //drag mouse
     public void mouseDragged(MouseEvent e) {
-    	if(shapesArray.contains(dragShape)) {
+		if(shapesArray.contains(dragShape)) {
 			shapesArray.remove(dragShape);
-			System.out.println("removing old shape");
+			//System.out.println("removing old shape");
 		}
-    	if(getShape()=="freehand") {
-    		points.add(e.getPoint());
-    		g.drawLine(x1, y1, e.getX(), e.getY());
-    		x1=e.getX();
-    		y1=e.getY();
-    	} else if(getShape()=="line") {
-    		dragShape = new ImplLine(g, x1,y1,e.getX(), e.getY(), color);
-    		shapesArray.add(dragShape);
-    		panel.repaint();
-    	} else if(getShape()=="circle") {
-    		dragShape = new Circle(x1,e.getX(),y1, e.getY(), color,g);
-    		shapesArray.add(dragShape);
-    		panel.repaint();
-    	} else if(getShape()=="rectangle") {
-    		dragShape = new Rectangle(x1,e.getX(),y1, e.getY(), color,g);
-    		shapesArray.add(dragShape);
-    		panel.repaint();
-    	} else if(getShape()=="oval") {
-    		dragShape = new Oval(x1,e.getX(), y1,e.getY(), color,g);
-    		shapesArray.add(dragShape);
-    		panel.repaint();
-    	} 
-    }
+		if(getShape()=="freehand") {
+			points.add(e.getPoint());
+			g.drawLine(x1, y1, e.getX(), e.getY());
+			x1=e.getX();
+			y1=e.getY();
+		} else if(getShape()=="line") {
+			dragShape = new ImplLine(g, x1,y1,e.getX(), e.getY(), color);
+			shapesArray.add(dragShape);
+			panel.repaint();
+		} else if(getShape()=="circle") {
+			dragShape = new Circle(x1,e.getX(),y1, e.getY(), color,g);
+			shapesArray.add(dragShape);
+			panel.repaint();
+		} else if(getShape()=="rectangle") {
+			dragShape = new Rectangle(x1,e.getX(),y1, e.getY(), color,g);
+			shapesArray.add(dragShape);
+			panel.repaint();
+		} else if(getShape()=="oval") {
+			dragShape = new Oval(x1,e.getX(), y1,e.getY(), color,g);
+			shapesArray.add(dragShape);
+			panel.repaint();
+		}
+	}
+
+
 
     @Override
   
     public void mouseMoved(MouseEvent e) {
- 
+
     }
 
     @Override
@@ -152,10 +155,11 @@ public class Listener implements ActionListener, MouseListener,MouseMotionListen
     	
         x1=e.getX();//get x
         y1=e.getY();//get y
-        
+
         if(getShape()=="freehand") {
-        	points.clear();
+			points.clear();
         	points.add(e.getPoint());
+
         }
 //        System.out.println(getShape());
 //        System.out.println(getColor());
@@ -195,10 +199,26 @@ public class Listener implements ActionListener, MouseListener,MouseMotionListen
         		shapesArray.add(shape);	
        		 	break;
         	case "freehand":
-        		shape = new Freehand(points, color, g);
-        		shapesArray.add(shape);
-        		break;	
-        }
+
+				ArrayList<Point> midpoints = new ArrayList<Point>();
+        		for (int i = 0; i < points.size() - 1 ; i ++)
+				{
+					midpoints.add(points.get(i).getLocation());
+				}
+				actulpoints.add(midpoints);
+				shape = new Freehand(actulpoints, color, g);
+				shape.draw();
+				shapesArray.add(shape);
+        		System.out.println(shapesArray.size());
+        		break;
+			case "text":
+				String inputValue = JOptionPane.showInputDialog("Please input a value");
+				text = inputValue;
+				shape = new Text(x1, x2, y1, y2, color, g,text);
+				shape.draw();
+				shapesArray.add(shape);
+				break;
+		}
         //System.out.println(getG());
         //g.drawLine(x1, y1, x2, y2);
        

@@ -1,33 +1,16 @@
 package client;
 
-import java.awt.EventQueue;
-import java.awt.Graphics;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.GridLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import java.awt.Canvas;
-import javax.swing.JMenuBar;
-import javax.swing.JTextArea;
-import javax.swing.border.BevelBorder;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.border.CompoundBorder;
-
 import Listener.Listener;
+import Listener.FileChooser;
 import shape.Shape;
 
-import java.awt.Color;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 
 public class ClientManager {
@@ -39,6 +22,7 @@ public class ClientManager {
 	static Listener listener = new Listener();
 	static int i = 0;
 
+
 	/**
 	 * Launch the application.
 	 */
@@ -49,9 +33,9 @@ public class ClientManager {
 						ClientManager window = new ClientManager();
 						window.frmWhiteboard.setVisible(true);
 						listener.setG(panel.getGraphics());
-						listener.setPanel(frmWhiteboard);
 						shapesArray = listener.getShapesArray();
-						System.out.println(shapesArray.size());
+						listener.setPanel(frmWhiteboard);
+						//System.out.println(shapesArray.size());
 						
 
 						
@@ -87,7 +71,7 @@ public class ClientManager {
 	        for (Shape l : shapesArray) {
 	            l.draw();
 	        }
-	        System.out.println("repaintok");
+	        //System.out.println(shapesArray.size());
 	    }
 	}
 	
@@ -98,10 +82,10 @@ public class ClientManager {
 		initialize();
 	}
 	
-	public static void draw()
-	{
-		panel.getGraphics().drawLine(100, 200, 300, 400);
-	}
+//	public static void draw()
+//	{
+//		panel.getGraphics().drawLine(100, 200, 300, 400);
+//	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -127,9 +111,23 @@ public class ClientManager {
 		menuBar.add(mnNewMenu);
 		
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("new");
+		mntmNewMenuItem_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				listener.getShapesArray().clear();
+				listener.getActulpoints().clear();
+				panel.updateUI();
+
+
+			}
+		});
 		mnNewMenu.add(mntmNewMenuItem_2);
 		
 		JMenuItem mntmNewMenuItem = new JMenuItem("open");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new FileChooser();
+			}
+		});
 		mnNewMenu.add(mntmNewMenuItem);
 		
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("save");
@@ -209,6 +207,11 @@ public class ClientManager {
 		menuBar.add(mnNewMenu_4);
 		
 		JMenuItem mntmTextInput = new JMenuItem("text input in canva");
+		mntmTextInput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				listener.setShape("text");
+			}
+		});
 		mnNewMenu_4.add(mntmTextInput);
 		
 		textField = new JTextField();
